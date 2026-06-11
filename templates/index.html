@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}SafeTech Tractor{% endblock %}
+{% block content %}
+
+<div style="margin-bottom:22px">
+    <h1 style="font-size:1.4rem;font-weight:800;margin-bottom:4px">Painel de Controlo</h1>
+    <p style="color:var(--muted);font-size:.83rem">Raspberry Pi 3 — Sistema de trator inteligente</p>
+</div>
+
+<!-- Status bar -->
+<div class="card" style="margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <span style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Estado</span>
+    <span class="badge badge-green" id="sys-badge">
+        <svg width="7" height="7" viewBox="0 0 7 7"><circle cx="3.5" cy="3.5" r="3.5" fill="currentColor"/></svg>
+        Online
+    </span>
+    <span class="badge badge-gray" id="dist-badge">Distância —</span>
+    <span class="badge badge-gray" id="line-badge">Linha —</span>
+    <span style="margin-left:auto;font-size:.75rem;color:var(--muted)" id="upd-time">—</span>
+</div>
+
+<!-- Mode grid -->
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+
+    <a href="/manual" class="mode-card">
+        <div class="mode-icon" style="background:rgba(234,179,8,.1);color:var(--accent)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        </div>
+        <div class="mode-body">
+            <div class="mode-title">Controlo Manual</div>
+            <div class="mode-desc">D-pad direcional com controlo de velocidade e teclado</div>
+        </div>
+        <svg class="mode-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+
+    <a href="/line_follower" class="mode-card">
+        <div class="mode-icon" style="background:rgba(34,197,94,.1);color:var(--green)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 8l7-6 7 6M5 16l7 6 7-6"/></svg>
+        </div>
+        <div class="mode-body">
+            <div class="mode-title">Seguidor de Linha</div>
+            <div class="mode-desc">Segue automaticamente uma faixa no chão com 3 sensores IR</div>
+        </div>
+        <svg class="mode-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+
+    <a href="/autonomous_radar" class="mode-card">
+        <div class="mode-icon" style="background:rgba(129,140,248,.1);color:var(--indigo)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/></svg>
+        </div>
+        <div class="mode-body">
+            <div class="mode-title">Condução Autónoma</div>
+            <div class="mode-desc">Evita obstáculos com sensor ultrassónico HC-SR04</div>
+        </div>
+        <svg class="mode-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+
+    <a href="/control_panel" class="mode-card">
+        <div class="mode-icon" style="background:rgba(249,115,22,.1);color:var(--orange)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><line x1="12" y1="7" x2="12" y2="12"/><line x1="12" y1="12" x2="5" y2="17"/><line x1="12" y1="12" x2="19" y2="17"/></svg>
+        </div>
+        <div class="mode-body">
+            <div class="mode-title">Painel de Controlo</div>
+            <div class="mode-desc">Luzes, piscas, sinalizadores, sons e relés</div>
+        </div>
+        <svg class="mode-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+
+    <a href="/mobile_cockpit" class="mode-card">
+        <div class="mode-icon" style="background:rgba(239,68,68,.1);color:var(--red)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        </div>
+        <div class="mode-body">
+            <div class="mode-title">Cockpit Mobile</div>
+            <div class="mode-desc">Joystick táctil completo, otimizado para smartphone</div>
+        </div>
+        <svg class="mode-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+
+</div>
+
+<style>
+.mode-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 16px;
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none; color: var(--text);
+    transition: border-color .15s, transform .15s;
+    cursor: pointer;
+}
+.mode-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.mode-card:active { transform: scale(.98); }
+.mode-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.mode-body { flex: 1; min-width: 0; }
+.mode-title { font-weight: 700; font-size: .9rem; margin-bottom: 3px; }
+.mode-desc  { font-size: .75rem; color: var(--muted); line-height: 1.4; }
+.mode-arrow { color: var(--muted); flex-shrink: 0; }
+</style>
+
+{% endblock %}
+{% block scripts %}
+<script>
+function updateStatus() {
+    fetch('/api/sensors').then(r => r.json()).then(d => {
+        document.getElementById('sys-badge').innerHTML =
+            '<svg width="7" height="7" viewBox="0 0 7 7"><circle cx="3.5" cy="3.5" r="3.5" fill="currentColor"/></svg> Online';
+        document.getElementById('sys-badge').className = 'badge badge-green';
+
+        const dist = d.ultrasonic_distance;
+        document.getElementById('dist-badge').textContent = dist ? `Dist: ${dist} cm` : 'Dist —';
+
+        const s = d.line_sensors;
+        const any = s.left || s.center || s.right;
+        document.getElementById('line-badge').textContent = any ? 'Linha detectada' : 'Sem linha';
+
+        const dt = new Date(d.timestamp);
+        document.getElementById('upd-time').textContent = dt.toLocaleTimeString('pt-PT');
+    }).catch(() => {
+        document.getElementById('sys-badge').textContent = 'Offline';
+        document.getElementById('sys-badge').className = 'badge badge-red';
+    });
+}
+setInterval(updateStatus, 3000);
+updateStatus();
+</script>
+{% endblock %}

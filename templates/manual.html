@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% block title %}SafeTech — Manual{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+    <div>
+        <h1 style="font-size:1.25rem;font-weight:800">Controlo Manual</h1>
+        <p style="color:var(--muted);font-size:.78rem;margin-top:2px">Mantém pressionado para mover</p>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+        <span class="badge badge-gray" id="dir-badge">Parado</span>
+        <span class="badge badge-yellow" id="spd-badge">70%</span>
+    </div>
+</div>
+
+<div class="two-col">
+
+    <!-- D-pad card -->
+    <div class="card">
+        <div class="card-label">Direção</div>
+        <div class="dpad">
+            <div class="drow">
+                <div></div>
+                <button class="dbtn"
+                    onmousedown="startMove('forward')" onmouseup="stopMove()"
+                    ontouchstart="startMove('forward')" ontouchend="stopMove()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                    FRENTE
+                </button>
+                <div></div>
+            </div>
+            <div class="drow">
+                <button class="dbtn"
+                    onmousedown="startMove('left')" onmouseup="stopMove()"
+                    ontouchstart="startMove('left')" ontouchend="stopMove()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    ESQ.
+                </button>
+                <button class="dbtn dbtn-stop" onclick="stopMove()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+                    STOP
+                </button>
+                <button class="dbtn"
+                    onmousedown="startMove('right')" onmouseup="stopMove()"
+                    ontouchstart="startMove('right')" ontouchend="stopMove()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    DIR.
+                </button>
+            </div>
+            <div class="drow">
+                <div></div>
+                <button class="dbtn"
+                    onmousedown="startMove('backward')" onmouseup="stopMove()"
+                    ontouchstart="startMove('backward')" ontouchend="stopMove()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                    TRÁS
+                </button>
+                <div></div>
+            </div>
+        </div>
+
+        <!-- Speed -->
+        <div style="margin-top:22px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
+                <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Velocidade</span>
+                <span style="font-weight:800;color:var(--accent);font-size:.95rem" id="spd-val">70%</span>
+            </div>
+            <input type="range" id="speed-slider" min="20" max="100" value="70" class="slider">
+            <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted);margin-top:4px">
+                <span>20%</span><span>100%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right column -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+
+        <!-- Sensors -->
+        <div class="card">
+            <div class="card-label">Sensores de Linha</div>
+            <div class="sensor-bar">
+                <div class="s-item">
+                    <div class="s-dot" id="sl-left"></div>
+                    <span class="s-lbl">Esq.</span>
+                </div>
+                <div class="s-item">
+                    <div class="s-dot" id="sl-center"></div>
+                    <span class="s-lbl">Centro</span>
+                </div>
+                <div class="s-item">
+                    <div class="s-dot" id="sl-right"></div>
+                    <span class="s-lbl">Dir.</span>
+                </div>
+            </div>
+            <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
+                <span style="font-size:.75rem;color:var(--muted)">Distância</span>
+                <span style="font-weight:700;font-size:.9rem" id="dist-val">—</span>
+            </div>
+        </div>
+
+        <!-- Servo -->
+        <div class="card">
+            <div class="card-label">Arco de Proteção</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <button class="btn btn-ghost" onclick="setServo(91)" style="padding:11px">Abrir</button>
+                <button class="btn btn-ghost" onclick="setServo(20)" style="padding:11px">Fechar</button>
+            </div>
+            <div style="margin-top:10px;text-align:center;font-size:.75rem;color:var(--muted)">
+                Ângulo atual: <strong style="color:var(--text)" id="servo-val">—</strong>°
+            </div>
+        </div>
+
+        <!-- Keyboard hints -->
+        <div class="card">
+            <div class="card-label">Teclado</div>
+            <div class="kbgrid">
+                <div><kbd>W</kbd>/<kbd>↑</kbd> Frente</div>
+                <div><kbd>S</kbd>/<kbd>↓</kbd> Trás</div>
+                <div><kbd>A</kbd>/<kbd>←</kbd> Esquerda</div>
+                <div><kbd>D</kbd>/<kbd>→</kbd> Direita</div>
+                <div><kbd>Space</kbd> Parar</div>
+                <div><kbd>Q</kbd>/<kbd>E</kbd> Servo</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media (max-width:640px) { .two-col { grid-template-columns:1fr; } }
+
+.dpad { display:flex; flex-direction:column; gap:8px; }
+.drow { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.dbtn {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:5px; padding:14px 4px; min-height:72px;
+    border-radius:10px; border:1px solid var(--border);
+    background:var(--surface2); color:var(--text);
+    font-size:.68rem; font-weight:800; letter-spacing:.04em;
+    cursor:pointer; transition:all .1s;
+    -webkit-tap-highlight-color:transparent; user-select:none;
+}
+.dbtn:hover { border-color:var(--accent); }
+.dbtn:active { background:var(--accent); color:#0d1117; border-color:var(--accent); transform:scale(.95); }
+.dbtn-stop { background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.3); color:var(--red); }
+.dbtn-stop:active { background:var(--red); color:#fff; border-color:var(--red); }
+
+.sensor-bar { display:flex; justify-content:space-around; }
+.s-item { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.s-dot {
+    width:36px; height:36px; border-radius:50%;
+    background:var(--surface2); border:2px solid var(--border);
+    transition:background .2s, border-color .2s, box-shadow .2s;
+}
+.s-dot.on  { background:var(--green); border-color:var(--green); box-shadow:0 0 10px rgba(34,197,94,.4); }
+.s-lbl { font-size:.68rem; color:var(--muted); font-weight:600; }
+
+.kbgrid { display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:.74rem; color:var(--muted); }
+kbd {
+    display:inline-block; padding:1px 5px; border-radius:4px;
+    background:var(--surface2); border:1px solid var(--border);
+    font-family:monospace; font-size:.7rem; color:var(--text);
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentSpeed = 70, isMoving = false, moveInterval = null;
+
+document.addEventListener('keydown', e => {
+    if (e.repeat) return;
+    const map = {w:'forward',arrowup:'forward',s:'backward',arrowdown:'backward',
+                 a:'left',arrowleft:'left',d:'right',arrowright:'right'};
+    const dir = map[e.key.toLowerCase()];
+    if (dir) { e.preventDefault(); startMove(dir); }
+    else if (e.key===' ') { e.preventDefault(); stopMove(); }
+    else if (e.key.toLowerCase()==='q') adjustServo(-10);
+    else if (e.key.toLowerCase()==='e') adjustServo(10);
+});
+document.addEventListener('keyup', e => {
+    const keys=['w','s','a','d','arrowup','arrowdown','arrowleft','arrowright'];
+    if (keys.includes(e.key.toLowerCase())) stopMove();
+});
+
+function startMove(dir) {
+    clearInterval(moveInterval);
+    isMoving = true;
+    const labels = {forward:'Frente',backward:'Trás',left:'Esquerda',right:'Direita'};
+    const b = document.getElementById('dir-badge');
+    b.textContent = labels[dir]||dir; b.className='badge badge-yellow';
+    sendMove(dir);
+    moveInterval = setInterval(()=>sendMove(dir), 100);
+}
+function stopMove() {
+    if (!isMoving) return;
+    isMoving = false; clearInterval(moveInterval); sendMove('stop');
+    const b = document.getElementById('dir-badge');
+    b.textContent='Parado'; b.className='badge badge-gray';
+}
+document.addEventListener('mouseup', ()=>{ if(isMoving) stopMove(); });
+document.addEventListener('touchend', ()=>{ if(isMoving) stopMove(); }, {passive:true});
+
+function sendMove(dir) {
+    fetch('/api/move',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({direction:dir,speed:currentSpeed})}).catch(()=>{});
+}
+
+document.getElementById('speed-slider').addEventListener('input', function() {
+    currentSpeed = parseInt(this.value);
+    document.getElementById('spd-val').textContent = currentSpeed+'%';
+    document.getElementById('spd-badge').textContent = currentSpeed+'%';
+});
+
+function setServo(angle) {
+    fetch('/api/servo',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({angle})}).then(r=>r.json()).then(d=>{
+        document.getElementById('servo-val').textContent=d.angle;
+    });
+}
+function adjustServo(delta) {
+    const cur=parseInt(document.getElementById('servo-val').textContent)||90;
+    setServo(Math.max(0,Math.min(180,cur+delta)));
+}
+
+function updateSensors() {
+    fetch('/api/sensors').then(r=>r.json()).then(d=>{
+        const s=d.line_sensors;
+        document.getElementById('sl-left').className  ='s-dot '+(s.left  ?'on':'');
+        document.getElementById('sl-center').className='s-dot '+(s.center?'on':'');
+        document.getElementById('sl-right').className ='s-dot '+(s.right ?'on':'');
+        const dist=d.ultrasonic_distance, el=document.getElementById('dist-val');
+        el.textContent=dist!==null?dist+' cm':'—';
+        el.style.color=dist!==null&&dist<20?'var(--red)':dist!==null?'var(--green)':'var(--muted)';
+    }).catch(()=>{});
+}
+setInterval(updateSensors,1000); updateSensors();
+</script>
+{% endblock %}

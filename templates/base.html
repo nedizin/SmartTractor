@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}SafeTech Tractor{% endblock %}</title>
+    <style>
+        :root {
+            --bg:       #f1f5f9;
+            --surface:  #ffffff;
+            --surface2: #f8fafc;
+            --border:   #e2e8f0;
+            --accent:   #f59e0b;
+            --acc-dim:  rgba(245,158,11,.12);
+            --green:    #16a34a;
+            --red:      #dc2626;
+            --orange:   #ea580c;
+            --indigo:   #4f46e5;
+            --text:     #111827;
+            --muted:    #6b7280;
+            --r:        12px;
+            --shadow:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+            --shadow-md:0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.05);
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html, body { height:100%; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Top nav ────────────────────────────────────── */
+        .topnav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            height: 68px;
+            padding: 0 28px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: -.01em;
+            white-space: nowrap;
+        }
+        .nav-logo .logo-icon {
+            width: 38px; height: 38px;
+            background: var(--accent);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 900;
+            box-shadow: 0 2px 6px rgba(245,158,11,.35);
+        }
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            flex: 1;
+        }
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: .88rem;
+            font-weight: 600;
+            transition: color .15s, background .15s;
+            white-space: nowrap;
+        }
+        .nav-links a:hover { color: var(--text); background: var(--bg); }
+        .nav-links a.active { color: var(--accent); background: var(--acc-dim); font-weight: 700; }
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .75rem;
+            color: var(--muted);
+            margin-left: auto;
+        }
+        .conn-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 6px rgba(22,163,74,.5);
+            transition: background .3s, box-shadow .3s;
+        }
+        .conn-dot.offline { background: var(--red); box-shadow: 0 0 6px rgba(220,38,38,.5); }
+
+        /* ── Main ───────────────────────────────────────── */
+        .main {
+            flex: 1;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 18px;
+            box-shadow: var(--shadow);
+        }
+        .card-label {
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        /* ── Buttons ────────────────────────────────────── */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+            border: none; border-radius: 9px; cursor: pointer;
+            font-size: .83rem; font-weight: 700;
+            padding: 9px 18px;
+            transition: filter .15s, transform .1s, box-shadow .15s;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .btn:active { transform: scale(.96); }
+        .btn-yellow { background: var(--accent); color: #ffffff; box-shadow: 0 2px 6px rgba(245,158,11,.35); }
+        .btn-yellow:hover { filter: brightness(1.08); box-shadow: 0 4px 12px rgba(245,158,11,.4); }
+        .btn-red    { background: var(--red);    color: #fff;   box-shadow: 0 2px 6px rgba(220,38,38,.3); }
+        .btn-red:hover    { filter: brightness(1.08); }
+        .btn-green  { background: var(--green);  color: #fff;   box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+        .btn-green:hover  { filter: brightness(1.08); }
+        .btn-ghost {
+            background: var(--surface); color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .btn-ghost:hover { background: var(--bg); border-color: #cbd5e1; }
+        .btn-lg { padding: 13px 28px; font-size: .95rem; border-radius: 11px; }
+
+        /* ── Badges ─────────────────────────────────────── */
+        .badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 10px; border-radius: 20px;
+            font-size: .72rem; font-weight: 700;
+        }
+        .badge-green  { background: rgba(22,163,74,.12);   color: var(--green); }
+        .badge-red    { background: rgba(220,38,38,.12);   color: var(--red); }
+        .badge-yellow { background: var(--acc-dim);        color: #d97706; }
+        .badge-gray   { background: var(--bg); border: 1px solid var(--border); color: var(--muted); }
+
+        /* ── Slider ─────────────────────────────────────── */
+        .slider {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 5px; border-radius: 3px;
+            background: var(--bg); outline: none;
+            border: 1px solid var(--border); cursor: pointer;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 19px; height: 19px; border-radius: 50%;
+            background: var(--accent); cursor: pointer;
+            box-shadow: 0 0 0 3px rgba(245,158,11,.2), 0 2px 4px rgba(0,0,0,.15);
+        }
+        .slider::-moz-range-thumb {
+            width: 19px; height: 19px; border-radius: 50%;
+            background: var(--accent); cursor: pointer; border: none;
+        }
+
+        /* ── Emergency stop ─────────────────────────────── */
+        .estop {
+            position: fixed; bottom: 22px; right: 22px; z-index: 200;
+        }
+        .estop-btn {
+            width: 66px; height: 66px; border-radius: 50%;
+            background: var(--red);
+            border: 3px solid rgba(255,255,255,.3);
+            color: #fff; font-size: .68rem; font-weight: 900;
+            letter-spacing: .03em;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(220,38,38,.5), 0 0 0 4px rgba(220,38,38,.15);
+            transition: transform .15s, box-shadow .15s;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            line-height: 1.15;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .estop-btn:hover  { transform: scale(1.07); box-shadow: 0 6px 28px rgba(220,38,38,.6), 0 0 0 6px rgba(220,38,38,.2); }
+        .estop-btn:active { transform: scale(.94); }
+
+        /* ── Bottom nav (mobile) ────────────────────────── */
+        .bottomnav {
+            display: none;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -1px 3px rgba(0,0,0,.06);
+            padding: 6px 0 env(safe-area-inset-bottom, 6px);
+        }
+        .bn-inner { display: flex; justify-content: space-around; }
+        .bn-item {
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            padding: 5px 10px;
+            color: var(--muted); text-decoration: none;
+            font-size: .6rem; font-weight: 700;
+            border-radius: 8px; transition: color .15s;
+        }
+        .bn-item svg { width: 20px; height: 20px; }
+        .bn-item.active { color: var(--accent); }
+
+        /* ── Responsive ─────────────────────────────────── */
+        @media (max-width: 768px) {
+            .topnav { height: 58px; padding: 0 16px; gap: 14px; }
+            .nav-links { display: none; }
+            .bottomnav { display: block; }
+            .main { padding: 14px; padding-bottom: 80px; }
+            .estop { bottom: 76px; right: 14px; }
+            .estop-btn { width: 56px; height: 56px; font-size: .6rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="topnav">
+    <a href="/" class="nav-logo">
+        <div class="logo-icon">🚜</div>
+        SafeTech
+    </a>
+    <div class="nav-links">
+        <a href="/"                 id="nl-home">Início</a>
+        <a href="/manual"           id="nl-manual">Manual</a>
+        <a href="/line_follower"    id="nl-line">Seguidor</a>
+        <a href="/autonomous_radar" id="nl-auto">Autónomo</a>
+        <a href="/control_panel"    id="nl-panel">Painel</a>
+        <a href="/mobile_cockpit"   id="nl-cockpit">Cockpit</a>
+    </div>
+    <div class="nav-status">
+        <div class="conn-dot" id="conn-dot"></div>
+        <span id="conn-lbl">Online</span>
+    </div>
+</nav>
+
+<main class="main">
+    {% block content %}{% endblock %}
+</main>
+
+<nav class="bottomnav">
+    <div class="bn-inner">
+        <a href="/"                class="bn-item" id="bn-home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Início
+        </a>
+        <a href="/manual"          class="bn-item" id="bn-manual">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Manual
+        </a>
+        <a href="/line_follower"   class="bn-item" id="bn-line">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+            Linha
+        </a>
+        <a href="/control_panel"   class="bn-item" id="bn-panel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Painel
+        </a>
+        <a href="/mobile_cockpit"  class="bn-item" id="bn-cockpit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            Cockpit
+        </a>
+    </div>
+</nav>
+
+<div class="estop">
+    <button class="estop-btn" onclick="emergencyStop()">STOP</button>
+</div>
+
+<script>
+    // Active nav
+    const _p = window.location.pathname;
+    const _navMap = {
+        '/':                ['nl-home',    'bn-home'],
+        '/manual':          ['nl-manual',  'bn-manual'],
+        '/line_follower':   ['nl-line',    'bn-line'],
+        '/control_panel':   ['nl-panel',   'bn-panel'],
+        '/autonomous_radar':['nl-auto',    null],
+        '/mobile_cockpit':  ['nl-cockpit', 'bn-cockpit'],
+    };
+    if (_navMap[_p]) {
+        _navMap[_p].forEach(id => id && document.getElementById(id)?.classList.add('active'));
+    }
+
+    // Connection indicator
+    const _dot = document.getElementById('conn-dot');
+    const _lbl = document.getElementById('conn-lbl');
+    function _chkConn() {
+        fetch('/api/sensors')
+            .then(() => { _dot.className = 'conn-dot'; _lbl.textContent = 'Online'; })
+            .catch(() => { _dot.className = 'conn-dot offline'; _lbl.textContent = 'Offline'; });
+    }
+    setInterval(_chkConn, 4000);
+
+    // Emergency stop — send all three stop commands directly
+    function emergencyStop() {
+        const h = {'Content-Type': 'application/json'};
+        fetch('/api/move',                  {method:'POST', headers:h, body:JSON.stringify({direction:'stop'})});
+        fetch('/api/stop_line_follower',    {method:'POST', headers:h});
+        fetch('/api/stop_autonomous_driving',{method:'POST', headers:h});
+    }
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

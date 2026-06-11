@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cockpit</title>
+    <style>
+        :root {
+            --bg:      #f1f5f9;
+            --surface: #ffffff;
+            --surface2:#f8fafc;
+            --border:  #e2e8f0;
+            --accent:  #f59e0b;
+            --green:   #16a34a;
+            --red:     #dc2626;
+            --orange:  #ea580c;
+            --text:    #111827;
+            --muted:   #6b7280;
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html, body {
+            height: 100%; overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg); color: var(--text);
+            touch-action: none;
+        }
+
+        /* Layout */
+        .cockpit {
+            display: flex; flex-direction: column;
+            height: 100vh; height: 100dvh;
+            padding: env(safe-area-inset-top,0) env(safe-area-inset-right,0)
+                     env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);
+        }
+
+        /* Top bar */
+        .topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 16px; height: 48px;
+            background: var(--surface); border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,.06);
+            flex-shrink: 0;
+        }
+        .topbar a {
+            color: var(--muted); text-decoration: none; font-size:.75rem; font-weight:600;
+            display:flex; align-items:center; gap:4px;
+        }
+        .topbar a:hover { color: var(--text); }
+        .topbar-title { font-size:.82rem; font-weight:800; letter-spacing:.01em; color:var(--text); }
+        .conn-dot {
+            width:7px; height:7px; border-radius:50%;
+            background: var(--green);
+            box-shadow: 0 0 6px rgba(22,163,74,.5);
+        }
+        .conn-dot.off { background:var(--red); box-shadow:0 0 6px rgba(220,38,38,.5); }
+
+        /* Main area */
+        .arena {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 16px; padding: 12px;
+            position: relative;
+        }
+
+        /* Top action row */
+        .action-row {
+            display: flex; gap: 10px; align-items: center; justify-content: center;
+            width: 100%;
+        }
+
+        /* Action buttons */
+        .act-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            padding: 10px 16px; border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface); color: var(--muted); cursor: pointer;
+            font-size: .65rem; font-weight: 800; letter-spacing: .04em;
+            transition: all .15s; -webkit-tap-highlight-color: transparent;
+            user-select: none; min-width: 64px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.07);
+        }
+        .act-btn:active { transform: scale(.93); }
+        .act-btn.active-l,
+        .act-btn.active-r {
+            background: rgba(245,158,11,.12); border-color: var(--accent); color: #d97706;
+            animation: blink-btn .5s ease-in-out infinite;
+        }
+        @keyframes blink-btn { 0%,100%{opacity:1} 50%{opacity:.4} }
+        .act-btn.horn-active { background: rgba(220,38,38,.1); border-color:var(--red); color:var(--red); }
+
+        /* Joystick */
+        .joystick-wrap { position: relative; flex-shrink: 0; }
+        .joystick-base {
+            width: 220px; height: 220px; border-radius: 50%;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            box-shadow: 0 4px 16px rgba(0,0,0,.1), inset 0 2px 4px rgba(0,0,0,.04);
+            position: relative; touch-action: none;
+        }
+        .joystick-ring {
+            position: absolute; border-radius: 50%;
+            border: 1px solid var(--border); pointer-events: none;
+        }
+        .jr1 { width:80px;  height:80px;  top:50%; left:50%; transform:translate(-50%,-50%); }
+        .jr2 { width:150px; height:150px; top:50%; left:50%; transform:translate(-50%,-50%); }
+        .joystick-stick {
+            position: absolute; width: 72px; height: 72px; border-radius: 50%;
+            background: var(--surface2); border: 2px solid var(--accent);
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            box-shadow: 0 4px 12px rgba(245,158,11,.3);
+            transition: transform .08s, box-shadow .08s;
+            pointer-events: none;
+        }
+        .joystick-stick.active {
+            box-shadow: 0 6px 20px rgba(245,158,11,.5);
+            background: rgba(245,158,11,.08);
+        }
+        /* Direction arrows on base */
+        .joy-arrow { position: absolute; color: var(--border); pointer-events: none; }
+        .joy-up    { top:10px;    left:50%; transform:translateX(-50%); }
+        .joy-down  { bottom:10px; left:50%; transform:translateX(-50%); }
+        .joy-left  { left:10px;   top:50%; transform:translateY(-50%); }
+        .joy-right { right:10px;  top:50%; transform:translateY(-50%); }
+
+        /* Speed + status row */
+        .bottom-row {
+            width: 100%; display: flex; flex-direction: column;
+            align-items: center; gap: 8px;
+        }
+        .speed-row {
+            display: flex; align-items: center; gap: 10px; width: 100%; max-width: 280px;
+        }
+        .speed-label { font-size:.7rem; color:var(--muted); font-weight:700; white-space:nowrap; }
+        .slider {
+            flex:1; -webkit-appearance:none; appearance:none; height:5px;
+            border-radius:3px; background:var(--bg); outline:none; border:1px solid var(--border);
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+            background:var(--accent); cursor:pointer;
+            box-shadow: 0 2px 4px rgba(245,158,11,.4);
+        }
+        .speed-val { font-size:.78rem; font-weight:800; color:var(--accent); min-width:32px; text-align:right; }
+
+        .dir-badge {
+            font-size:.7rem; font-weight:800; letter-spacing:.05em; color:var(--muted);
+            background: var(--surface); border:1px solid var(--border);
+            padding:4px 14px; border-radius:20px; transition:all .15s;
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        }
+        .dir-badge.moving { color:#d97706; border-color:var(--accent); background:rgba(245,158,11,.1); }
+
+        /* Emergency stop */
+        .estop-cockpit {
+            position: absolute; bottom: 12px; right: 12px;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: var(--red); border: 3px solid rgba(255,255,255,.3);
+            color: white; font-size: .62rem; font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(220,38,38,.5), 0 0 0 4px rgba(220,38,38,.15);
+            display: flex; align-items: center; justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .estop-cockpit:active { transform: scale(.9); }
+    </style>
+</head>
+<body>
+<div class="cockpit">
+
+    <!-- Top bar -->
+    <div class="topbar">
+        <a href="/">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Início
+        </a>
+        <div class="topbar-title">🚜 Cockpit</div>
+        <div style="display:flex;align-items:center;gap:6px">
+            <div class="conn-dot" id="cdot"></div>
+            <span style="font-size:.7rem;color:var(--muted)" id="clbl">Online</span>
+        </div>
+    </div>
+
+    <!-- Arena -->
+    <div class="arena">
+
+        <!-- Action row: blinkers + horn -->
+        <div class="action-row">
+            <button class="act-btn" id="btn-blink-l" onclick="toggleBlinker('left')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l-6-6 6-6"/><path d="M21 12H3"/></svg>
+                ESQ.
+            </button>
+
+            <button class="act-btn" id="btn-horn"
+                ontouchstart="hornOn()" ontouchend="hornOff()"
+                onmousedown="hornOn()" onmouseup="hornOff()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                BUZINA
+            </button>
+
+            <button class="act-btn" id="btn-blink-r" onclick="toggleBlinker('right')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l6-6-6-6"/><path d="M3 12h18"/></svg>
+                DIR.
+            </button>
+        </div>
+
+        <!-- Joystick -->
+        <div class="joystick-wrap">
+            <div class="joystick-base" id="joystick-base">
+                <div class="joystick-ring jr1"></div>
+                <div class="joystick-ring jr2"></div>
+                <svg class="joy-arrow joy-up"    width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+                <svg class="joy-arrow joy-down"  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                <svg class="joy-arrow joy-left"  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                <svg class="joy-arrow joy-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                <div class="joystick-stick" id="joystick-stick"></div>
+            </div>
+        </div>
+
+        <!-- Speed + direction -->
+        <div class="bottom-row">
+            <div class="speed-row">
+                <span class="speed-label">VEL.</span>
+                <input type="range" id="speed-slider" class="slider" min="20" max="100" value="60">
+                <span class="speed-val" id="speed-val">60%</span>
+            </div>
+            <div class="dir-badge" id="dir-badge">PARADO</div>
+        </div>
+
+        <!-- Emergency stop -->
+        <button class="estop-cockpit" onclick="emergencyStop()">STOP</button>
+    </div>
+
+</div>
+
+<script>
+    let currentSpeed = 60;
+    let isDragging = false;
+    let currentDir = null;
+    let sendInterval = null;
+    let blinkerState = {left: false, right: false};
+
+    const base  = document.getElementById('joystick-base');
+    const stick = document.getElementById('joystick-stick');
+    const badge = document.getElementById('dir-badge');
+
+    document.getElementById('speed-slider').addEventListener('input', function() {
+        currentSpeed = parseInt(this.value);
+        document.getElementById('speed-val').textContent = currentSpeed + '%';
+    });
+
+    base.addEventListener('touchstart',  e => { e.preventDefault(); startDrag(e.touches[0]); }, {passive:false});
+    base.addEventListener('touchmove',   e => { e.preventDefault(); moveDrag(e.touches[0]); }, {passive:false});
+    base.addEventListener('touchend',    e => { e.preventDefault(); endDrag(); }, {passive:false});
+    base.addEventListener('touchcancel', e => { e.preventDefault(); endDrag(); }, {passive:false});
+    base.addEventListener('mousedown',  e => { startDrag(e); });
+    document.addEventListener('mousemove', e => { if(isDragging) moveDrag(e); });
+    document.addEventListener('mouseup',   () => { if(isDragging) endDrag(); });
+
+    function startDrag(touch) {
+        isDragging = true;
+        stick.classList.add('active');
+        moveDrag(touch);
+        sendInterval = setInterval(sendCurrentDir, 100);
+    }
+
+    function moveDrag(touch) {
+        if (!isDragging) return;
+        const rect   = base.getBoundingClientRect();
+        const cx     = rect.left + rect.width  / 2;
+        const cy     = rect.top  + rect.height / 2;
+        const dx     = touch.clientX - cx;
+        const dy     = touch.clientY - cy;
+        const radius = rect.width / 2 - 36;
+        const dist   = Math.sqrt(dx*dx + dy*dy);
+        const clamp  = Math.min(dist, radius);
+        const angle  = Math.atan2(dy, dx);
+        const nx     = Math.cos(angle) * clamp;
+        const ny     = Math.sin(angle) * clamp;
+
+        stick.style.transform = `translate(calc(-50% + ${nx}px), calc(-50% + ${ny}px))`;
+
+        const DEAD  = 0.25;
+        const nx_n  = nx / radius;
+        const ny_n  = ny / radius;
+        let dir = null;
+        if (Math.abs(ny_n) > Math.abs(nx_n)) {
+            if      (ny_n < -DEAD) dir = 'forward';
+            else if (ny_n >  DEAD) dir = 'backward';
+        } else {
+            if      (nx_n < -DEAD) dir = 'left';
+            else if (nx_n >  DEAD) dir = 'right';
+        }
+        currentDir = dir;
+    }
+
+    function endDrag() {
+        isDragging = false;
+        stick.classList.remove('active');
+        stick.style.transform = 'translate(-50%, -50%)';
+        clearInterval(sendInterval);
+        currentDir = null;
+        sendMove('stop');
+        badge.textContent = 'PARADO';
+        badge.className = 'dir-badge';
+    }
+
+    function sendCurrentDir() {
+        if (currentDir) sendMove(currentDir);
+    }
+
+    function sendMove(dir) {
+        const labels = {forward:'FRENTE', backward:'TRÁS', left:'ESQUERDA', right:'DIREITA', stop:'PARADO'};
+        badge.textContent = labels[dir] || dir;
+        badge.className   = 'dir-badge' + (dir !== 'stop' ? ' moving' : '');
+        fetch('/api/move', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({direction:dir, speed:currentSpeed})
+        }).catch(()=>{});
+    }
+
+    // Blinkers
+    function toggleBlinker(side) {
+        const other = side === 'left' ? 'right' : 'left';
+        if (blinkerState[side]) {
+            blinkerState[side] = false;
+            document.getElementById('btn-blink-'+side).className = 'act-btn';
+            ctrl('pisca_'+side, 'off');
+        } else {
+            // Turn off the other blinker first
+            if (blinkerState[other]) {
+                blinkerState[other] = false;
+                document.getElementById('btn-blink-'+other).className = 'act-btn';
+                ctrl('pisca_'+other, 'off');
+            }
+            blinkerState[side] = true;
+            document.getElementById('btn-blink-'+side).className = 'act-btn active-'+side;
+            ctrl('pisca_'+side, 'on');
+        }
+    }
+
+    // Horn
+    function hornOn()  { document.getElementById('btn-horn').classList.add('horn-active');    ctrl('buzzer','on'); }
+    function hornOff() { document.getElementById('btn-horn').classList.remove('horn-active'); ctrl('buzzer','off'); }
+
+    function ctrl(component, state) {
+        fetch('/api/control',{
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({component,state})
+        }).catch(()=>{});
+    }
+
+    // Emergency stop
+    function emergencyStop() {
+        endDrag();
+        const h = {'Content-Type':'application/json'};
+        fetch('/api/stop_line_follower',     {method:'POST', headers:h});
+        fetch('/api/stop_autonomous_driving',{method:'POST', headers:h});
+    }
+
+    // Connection dot
+    const cdot = document.getElementById('cdot');
+    const clbl = document.getElementById('clbl');
+    function checkConn() {
+        fetch('/api/sensors')
+            .then(()  => { cdot.className='conn-dot';     clbl.textContent='Online'; })
+            .catch(()=> { cdot.className='conn-dot off'; clbl.textContent='Offline'; });
+    }
+    setInterval(checkConn, 4000);
+</script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block title %}SafeTech — Seguidor de Linha{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+    <div>
+        <h1 style="font-size:1.25rem;font-weight:800">Seguidor de Linha</h1>
+        <p style="color:var(--muted);font-size:.78rem;margin-top:2px">Seguimento automático com 3 sensores IR</p>
+    </div>
+    <span class="badge badge-gray" id="lf-status">Parado</span>
+</div>
+
+<div class="two-col">
+
+    <!-- Control card -->
+    <div class="card">
+        <div class="card-label">Controlo</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+            <button class="btn btn-green btn-lg" id="btn-start" onclick="startFollower()" style="width:100%">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Iniciar Seguidor
+            </button>
+            <button class="btn btn-red btn-lg" id="btn-stop" onclick="stopFollower()" style="width:100%" disabled>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
+                Parar Seguidor
+            </button>
+        </div>
+
+        <!-- Speed -->
+        <div style="margin-top:22px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
+                <span class="card-label" style="margin:0">Velocidade base</span>
+                <span style="font-weight:800;color:var(--accent)" id="lf-spd-val">40%</span>
+            </div>
+            <input type="range" id="lf-speed" min="20" max="80" value="40" class="slider">
+        </div>
+
+        <!-- Info -->
+        <div style="margin-top:18px;padding:12px;background:var(--surface2);border-radius:9px;border:1px solid var(--border)">
+            <div style="font-size:.72rem;color:var(--muted);line-height:1.7">
+                <div>Sensor centro → Seguir em frente</div>
+                <div>Sensor esquerdo → Virar à esquerda</div>
+                <div>Sensor direito → Virar à direita</div>
+                <div>Sem linha → Modo de recuperação</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sensors card -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card">
+            <div class="card-label">Sensores IR em tempo real</div>
+            <div style="display:flex;justify-content:space-around;margin:10px 0 18px">
+                <div class="ir-sensor">
+                    <div class="ir-circle" id="ir-left"></div>
+                    <div class="ir-label">Esquerdo</div>
+                    <div class="ir-state" id="ir-left-txt">—</div>
+                </div>
+                <div class="ir-sensor">
+                    <div class="ir-circle" id="ir-center"></div>
+                    <div class="ir-label">Centro</div>
+                    <div class="ir-state" id="ir-center-txt">—</div>
+                </div>
+                <div class="ir-sensor">
+                    <div class="ir-circle" id="ir-right"></div>
+                    <div class="ir-label">Direito</div>
+                    <div class="ir-state" id="ir-right-txt">—</div>
+                </div>
+            </div>
+
+            <!-- Line visualization -->
+            <div style="margin-top:6px">
+                <div class="card-label">Posição da linha</div>
+                <div class="line-vis">
+                    <div class="lv-seg" id="lv-l"></div>
+                    <div class="lv-seg" id="lv-c"></div>
+                    <div class="lv-seg" id="lv-r"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Distância frontal</div>
+            <div style="text-align:center;padding:10px 0">
+                <div style="font-size:2.2rem;font-weight:900;letter-spacing:-.02em" id="dist-big">—</div>
+                <div style="font-size:.78rem;color:var(--muted);margin-top:4px">centímetros</div>
+            </div>
+            <div class="dist-bar-wrap">
+                <div class="dist-bar" id="dist-bar"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media (max-width:640px) { .two-col { grid-template-columns:1fr; } }
+
+.ir-sensor { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.ir-circle {
+    width:52px; height:52px; border-radius:50%;
+    background:var(--surface2); border:2px solid var(--border);
+    transition:background .2s, border-color .2s, box-shadow .2s;
+}
+.ir-circle.on  { background:var(--green); border-color:var(--green); box-shadow:0 0 16px rgba(34,197,94,.5); }
+.ir-label { font-size:.7rem; color:var(--muted); font-weight:600; }
+.ir-state { font-size:.72rem; font-weight:700; color:var(--muted); }
+.ir-state.on { color:var(--green); }
+
+.line-vis { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-top:8px; }
+.lv-seg { height:14px; border-radius:4px; background:var(--surface2); border:1px solid var(--border); transition:background .2s; }
+.lv-seg.on { background:var(--accent); border-color:var(--accent); }
+
+.dist-bar-wrap { height:8px; background:var(--surface2); border-radius:4px; margin-top:12px; overflow:hidden; }
+.dist-bar { height:100%; border-radius:4px; background:var(--green); width:0%; transition:width .3s, background .3s; }
+</style>
+
+{% endblock %}
+{% block scripts %}
+<script>
+let lfRunning = false;
+
+document.getElementById('lf-speed').addEventListener('input', function() {
+    document.getElementById('lf-spd-val').textContent = this.value + '%';
+});
+
+function startFollower() {
+    fetch('/api/start_line_follower', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({speed: parseInt(document.getElementById('lf-speed').value)})})
+        .then(r=>r.json()).then(d => {
+            if (d.status==='started' || d.status==='already_running') {
+                lfRunning = true;
+                document.getElementById('btn-start').disabled = true;
+                document.getElementById('btn-stop').disabled = false;
+                document.getElementById('lf-status').textContent = 'A seguir';
+                document.getElementById('lf-status').className = 'badge badge-green';
+            }
+        });
+}
+
+function stopFollower() {
+    fetch('/api/stop_line_follower', {method:'POST', headers:{'Content-Type':'application/json'}})
+        .then(() => {
+            lfRunning = false;
+            document.getElementById('btn-start').disabled = false;
+            document.getElementById('btn-stop').disabled = true;
+            document.getElementById('lf-status').textContent = 'Parado';
+            document.getElementById('lf-status').className = 'badge badge-gray';
+        });
+}
+
+function updateSensors() {
+    fetch('/api/sensors').then(r=>r.json()).then(d => {
+        const s = d.line_sensors;
+        const keys = ['left','center','right'];
+        const ids  = ['ir-left','ir-center','ir-right'];
+        const txts = ['ir-left-txt','ir-center-txt','ir-right-txt'];
+        const lvs  = ['lv-l','lv-c','lv-r'];
+        keys.forEach((k,i) => {
+            const on = s[k];
+            document.getElementById(ids[i]).className  = 'ir-circle'+(on?' on':'');
+            const t = document.getElementById(txts[i]);
+            t.textContent = on ? 'LINHA' : 'LIVRE';
+            t.className = 'ir-state'+(on?' on':'');
+            document.getElementById(lvs[i]).className = 'lv-seg'+(on?' on':'');
+        });
+        const dist = d.ultrasonic_distance;
+        const big  = document.getElementById('dist-big');
+        const bar  = document.getElementById('dist-bar');
+        if (dist !== null) {
+            big.textContent = dist;
+            big.style.color = dist < 20 ? 'var(--red)' : dist < 40 ? 'var(--orange)' : 'var(--text)';
+            const pct = Math.max(0, Math.min(100, (1 - dist/200)*100));
+            bar.style.width = pct + '%';
+            bar.style.background = dist < 20 ? 'var(--red)' : dist < 40 ? 'var(--orange)' : 'var(--green)';
+        } else {
+            big.textContent = '—'; big.style.color = 'var(--muted)';
+            bar.style.width = '0%';
+        }
+    }).catch(()=>{});
+}
+setInterval(updateSensors, 400); updateSensors();
+</script>
+{% endblock %}

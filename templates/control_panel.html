@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+{% block title %}SafeTech — Painel de Controlo{% endblock %}
+{% block content %}
+
+<div style="margin-bottom:18px">
+    <h1 style="font-size:1.25rem;font-weight:800">Painel de Controlo</h1>
+    <p style="color:var(--muted);font-size:.78rem;margin-top:2px">Luzes, sinalizadores, sons e relés</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+
+    <!-- Lights -->
+    <div class="card">
+        <div class="card-label">Luzes</div>
+        <div class="ctrl-grid">
+            <div class="ctrl-item" onclick="toggle('luz_frente')">
+                <div class="ctrl-icon" id="icon-luz_frente">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                </div>
+                <span class="ctrl-lbl">Luz Frente</span>
+                <div class="ctrl-toggle" id="tog-luz_frente"></div>
+            </div>
+            <div class="ctrl-item" onclick="toggle('luz_tras')">
+                <div class="ctrl-icon" id="icon-luz_tras">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                </div>
+                <span class="ctrl-lbl">Luz Trás</span>
+                <div class="ctrl-toggle" id="tog-luz_tras"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signals -->
+    <div class="card">
+        <div class="card-label">Sinalizadores</div>
+
+        <!-- Hazard button — full width, prominent -->
+        <div class="hazard-btn" id="hazard-btn" onclick="toggleHazard()">
+            <div class="hazard-icon" id="hazard-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div>
+                <div class="hazard-title">Piscas de Avaria</div>
+                <div class="hazard-sub">Ambos os piscas em simultâneo</div>
+            </div>
+            <div class="hazard-toggle" id="hazard-toggle"></div>
+        </div>
+
+        <div class="ctrl-grid" style="margin-top:10px">
+            <div class="ctrl-item" onclick="togglePisca('pisca_left')">
+                <div class="ctrl-icon blink-slow" id="icon-pisca_left">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l-6-6 6-6"/><path d="M21 12H3"/></svg>
+                </div>
+                <span class="ctrl-lbl">Pisca Esq.</span>
+                <div class="ctrl-toggle" id="tog-pisca_left"></div>
+            </div>
+            <div class="ctrl-item" onclick="togglePisca('pisca_right')">
+                <div class="ctrl-icon blink-slow" id="icon-pisca_right">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l6-6-6-6"/><path d="M3 12h18"/></svg>
+                </div>
+                <span class="ctrl-lbl">Pisca Dir.</span>
+                <div class="ctrl-toggle" id="tog-pisca_right"></div>
+            </div>
+            <div class="ctrl-item" onclick="toggle('pirilâmpo')">
+                <div class="ctrl-icon blink-fast" id="icon-pirilâmpo">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+                <span class="ctrl-lbl">Pirilâmpo</span>
+                <div class="ctrl-toggle" id="tog-pirilâmpo"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sound -->
+    <div class="card">
+        <div class="card-label">Som</div>
+        <div class="ctrl-grid">
+            <div class="ctrl-item" onclick="toggle('buzzer')">
+                <div class="ctrl-icon" id="icon-buzzer">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                </div>
+                <span class="ctrl-lbl">Buzzer</span>
+                <div class="ctrl-toggle" id="tog-buzzer"></div>
+            </div>
+            <div class="ctrl-item" onclick="toggle('som_trabalhar')">
+                <div class="ctrl-icon" id="icon-som_trabalhar">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="15" y1="9" x2="15" y2="15"/><line x1="19" y1="7" x2="19" y2="17"/></svg>
+                </div>
+                <span class="ctrl-lbl">Som Trabalho</span>
+                <div class="ctrl-toggle" id="tog-som_trabalhar"></div>
+            </div>
+            <div class="ctrl-item" onclick="toggle('som_seguranca')">
+                <div class="ctrl-icon" id="icon-som_seguranca">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <span class="ctrl-lbl">Som Segurança</span>
+                <div class="ctrl-toggle" id="tog-som_seguranca"></div>
+            </div>
+            <div class="ctrl-item" onclick="toggle('som_inclinacao')">
+                <div class="ctrl-icon" id="icon-som_inclinacao">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <span class="ctrl-lbl">Som Inclinação</span>
+                <div class="ctrl-toggle" id="tog-som_inclinacao"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Relays -->
+    <div class="card">
+        <div class="card-label">Relés</div>
+        <div class="ctrl-grid">
+            <div class="ctrl-item" onclick="toggle('rele_1')">
+                <div class="ctrl-icon" id="icon-rele_1">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                </div>
+                <span class="ctrl-lbl">Relé 1</span>
+                <div class="ctrl-toggle" id="tog-rele_1"></div>
+            </div>
+            <div class="ctrl-item" onclick="toggle('rele_2')">
+                <div class="ctrl-icon" id="icon-rele_2">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                </div>
+                <span class="ctrl-lbl">Relé 2</span>
+                <div class="ctrl-toggle" id="tog-rele_2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All off -->
+    <button class="btn btn-red btn-lg" onclick="allOff()" style="width:100%">
+        Desligar Tudo
+    </button>
+
+</div>
+
+<style>
+.ctrl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+.ctrl-item {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    padding: 16px 10px; border-radius: 10px;
+    background: var(--surface2); border: 1px solid var(--border);
+    cursor: pointer; transition: border-color .15s, background .15s, box-shadow .15s;
+    -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.ctrl-item:hover   { border-color: #cbd5e1; box-shadow: var(--shadow); }
+.ctrl-item.active  { background: rgba(245,158,11,.07); border-color: var(--accent); box-shadow: 0 0 0 2px rgba(245,158,11,.15); }
+.ctrl-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); transition: color .2s, background .2s, border-color .2s;
+}
+.ctrl-item.active .ctrl-icon { color: var(--accent); background: var(--acc-dim); border-color: rgba(245,158,11,.3); }
+.ctrl-lbl { font-size: .72rem; font-weight: 700; color: var(--muted); text-align: center; }
+.ctrl-item.active .ctrl-lbl { color: var(--text); }
+
+/* Blink animations for pisca/pirilâmpo icons when active */
+@keyframes blink-slow { 0%,100%{opacity:1} 50%{opacity:.15} }
+@keyframes blink-fast { 0%,100%{opacity:1} 50%{opacity:.15} }
+.ctrl-item.active .ctrl-icon.blink-slow { animation: blink-slow .5s ease-in-out infinite; }
+.ctrl-item.active .ctrl-icon.blink-fast { animation: blink-fast .3s ease-in-out infinite; }
+
+/* Hazard button */
+.hazard-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px; border-radius: 10px;
+    background: var(--surface2); border: 1px solid var(--border);
+    cursor: pointer; transition: all .15s;
+    -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.hazard-btn:hover { border-color: #cbd5e1; box-shadow: var(--shadow); }
+.hazard-btn.active {
+    background: rgba(234,88,12,.08);
+    border-color: var(--orange);
+    box-shadow: 0 0 0 2px rgba(234,88,12,.15);
+}
+.hazard-icon {
+    width: 48px; height: 48px; border-radius: 10px; flex-shrink: 0;
+    background: var(--surface); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); transition: color .2s, background .2s;
+}
+.hazard-btn.active .hazard-icon {
+    color: var(--orange); background: rgba(234,88,12,.1); border-color: rgba(234,88,12,.3);
+    animation: blink-slow .5s ease-in-out infinite;
+}
+.hazard-title { font-size: .85rem; font-weight: 700; color: var(--text); }
+.hazard-sub   { font-size: .7rem; color: var(--muted); margin-top: 2px; }
+.hazard-btn.active .hazard-title { color: var(--orange); }
+
+.hazard-toggle {
+    width: 42px; height: 24px; border-radius: 12px; margin-left: auto; flex-shrink: 0;
+    background: var(--border); border: 1px solid #cbd5e1; position: relative; transition: background .2s;
+}
+.hazard-toggle::after {
+    content: ''; position: absolute;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #9ca3af; top: 2px; left: 2px;
+    transition: transform .2s, background .2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,.15);
+}
+.hazard-btn.active .hazard-toggle { background: var(--orange); border-color: var(--orange); }
+.hazard-btn.active .hazard-toggle::after { transform: translateX(18px); background: #fff; }
+
+/* Toggle pill */
+.ctrl-toggle {
+    width: 36px; height: 20px; border-radius: 10px;
+    background: var(--border); position: relative; transition: background .2s;
+    border: 1px solid #cbd5e1;
+}
+.ctrl-toggle::after {
+    content: ''; position: absolute;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #9ca3af; top: 2px; left: 2px;
+    transition: transform .2s, background .2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,.15);
+}
+.ctrl-item.active .ctrl-toggle { background: var(--accent); border-color: #d97706; }
+.ctrl-item.active .ctrl-toggle::after { transform: translateX(16px); background: #ffffff; }
+</style>
+
+{% endblock %}
+{% block scripts %}
+<script>
+const states = {};
+let hazardOn = false;
+
+// Sync button states with actual hardware state on page load
+fetch('/api/component_states').then(r => r.json()).then(data => {
+    for (const [component, on] of Object.entries(data)) {
+        if (component === 'hazard') { hazardOn = on; updateHazardUI(on); }
+        else { states[component] = on; updateUI(component, on); }
+    }
+}).catch(() => {});
+
+// ── Hazard ────────────────────────────────────────────────────────────────
+
+function toggleHazard() {
+    hazardOn = !hazardOn;
+    updateHazardUI(hazardOn);
+    if (hazardOn) {
+        // Stop individual piscas when hazard turns on
+        states['pisca_left'] = false;  updateUI('pisca_left', false);
+        states['pisca_right'] = false; updateUI('pisca_right', false);
+    }
+    fetch('/api/hazard', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({state: hazardOn ? 'on' : 'off'})
+    }).then(r => r.json()).then(d => {
+        hazardOn = d.active;
+        updateHazardUI(hazardOn);
+    }).catch(() => { hazardOn = !hazardOn; updateHazardUI(hazardOn); });
+}
+
+function updateHazardUI(on) {
+    document.getElementById('hazard-btn').classList.toggle('active', on);
+}
+
+// ── Individual piscas (stop hazard if active) ─────────────────────────────
+
+function togglePisca(component) {
+    if (hazardOn) {
+        hazardOn = false;
+        updateHazardUI(false);
+        fetch('/api/hazard', {method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({state:'off'})});
+    }
+    toggle(component);
+}
+
+// ── Generic toggle ────────────────────────────────────────────────────────
+
+function toggle(component) {
+    const prev = states[component];
+    states[component] = !prev;
+    updateUI(component, states[component]);
+
+    fetch('/api/control', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({component, state: states[component] ? 'on' : 'off'})
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.status === 'error') { states[component] = prev; updateUI(component, prev); }
+    })
+    .catch(() => { states[component] = prev; updateUI(component, prev); });
+}
+
+function updateUI(component, on) {
+    const icon = document.getElementById('icon-' + component);
+    const item = icon?.closest('.ctrl-item');
+    if (item) item.classList.toggle('active', on);
+}
+
+// ── All off ───────────────────────────────────────────────────────────────
+
+function allOff() {
+    const h = {'Content-Type': 'application/json'};
+    // Stop hazard
+    if (hazardOn) {
+        hazardOn = false; updateHazardUI(false);
+        fetch('/api/hazard', {method:'POST', headers:h, body:JSON.stringify({state:'off'})});
+    }
+    const all = ['luz_frente','luz_tras','pisca_left','pisca_right','pirilâmpo',
+                 'buzzer','som_trabalhar','som_seguranca','som_inclinacao','rele_1','rele_2'];
+    all.forEach(c => {
+        states[c] = false; updateUI(c, false);
+        fetch('/api/control', {method:'POST', headers:h, body:JSON.stringify({component:c, state:'off'})});
+    });
+}
+</script>
+{% endblock %}
