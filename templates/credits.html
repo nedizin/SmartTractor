@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Créditos — SafeTech Tractor{% endblock %}
+{% block content %}
+
+<div style="margin-bottom:22px">
+    <h1 style="font-size:1.4rem;font-weight:800;margin-bottom:4px">Créditos</h1>
+    <p style="color:var(--muted);font-size:.83rem">Sobre o projeto, a equipa e o financiamento</p>
+</div>
+
+<!-- ── Hero ──────────────────────────────────────────────────────────── -->
+<div class="card" style="text-align:center;padding:40px 24px 32px;margin-bottom:16px;
+     background:linear-gradient(135deg,#fffbeb 0%,#fff7ed 60%,#fef3c7 100%);
+     border-color:rgba(245,158,11,.2)">
+    <img src="/static/images/logo-epms.png" alt="EPMS"
+         style="height:64px;object-fit:contain;margin-bottom:20px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.12))">
+    <h2 style="font-size:1.75rem;font-weight:900;letter-spacing:-.03em;margin-bottom:8px">
+        Smart SafeTech Tractor
+    </h2>
+    <p style="color:var(--muted);font-size:.9rem;max-width:540px;margin:0 auto 20px;line-height:1.65">
+        Sistema de controlo inteligente para trator com Raspberry Pi —
+        condução manual, seguimento de linha automático, condução autónoma
+        com desvio de obstáculos e proteção de segurança por deteção de inclinação.
+    </p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <span class="badge badge-yellow">Raspberry Pi 3</span>
+        <span class="badge badge-gray">Python 3 · Flask</span>
+        <span class="badge badge-gray">Hardware GPIO</span>
+        <span class="badge badge-green">Projeto Final de Curso</span>
+    </div>
+</div>
+
+<!-- ── Team ──────────────────────────────────────────────────────────── -->
+<div class="card" style="margin-bottom:16px">
+    <div class="card-label">Equipa do Projeto</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:4px">
+
+        <div style="display:flex;align-items:center;gap:14px;padding:14px;
+             background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+            <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);
+                 display:flex;align-items:center;justify-content:center;
+                 color:#fff;font-size:1.15rem;font-weight:900;flex-shrink:0;
+                 box-shadow:0 2px 8px rgba(245,158,11,.35)">S</div>
+            <div>
+                <div style="font-weight:700;font-size:.88rem">Simão Pereira</div>
+                <div style="color:var(--muted);font-size:.74rem;margin-top:2px">Desenvolvimento</div>
+            </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:14px;padding:14px;
+             background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+            <div style="width:44px;height:44px;border-radius:50%;background:var(--indigo);
+                 display:flex;align-items:center;justify-content:center;
+                 color:#fff;font-size:1.15rem;font-weight:900;flex-shrink:0;
+                 box-shadow:0 2px 8px rgba(79,70,229,.3)">G</div>
+            <div>
+                <div style="font-weight:700;font-size:.88rem">Grupo SafeTech</div>
+                <div style="color:var(--muted);font-size:.74rem;margin-top:2px">Hardware &amp; Testes</div>
+            </div>
+        </div>
+
+    </div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);
+         display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span class="badge badge-gray">Turma EAC</span>
+        <span class="badge badge-gray">Ano letivo 2025/2026</span>
+        <span class="badge badge-yellow">Projeto Final</span>
+    </div>
+</div>
+
+<!-- ── School ─────────────────────────────────────────────────────────── -->
+<div class="card" style="margin-bottom:16px">
+    <div class="card-label">Instituição</div>
+    <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+        <img src="/static/images/logo-epms.png" alt="EPMS"
+             style="height:60px;object-fit:contain;flex-shrink:0">
+        <div>
+            <div style="font-weight:800;font-size:1rem;margin-bottom:4px">EPMS</div>
+            <div style="color:var(--muted);font-size:.82rem;line-height:1.6">
+                Curso de Técnico de Eletrónica, Automação e Computadores<br>
+                Ano letivo 2025/2026
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Funding ────────────────────────────────────────────────────────── -->
+<div class="card" style="margin-bottom:16px">
+    <div class="card-label">Cofinanciado por</div>
+    <div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap;padding:10px 0 6px">
+        <img src="/static/images/eu.png"      alt="União Europeia"
+             style="height:56px;object-fit:contain">
+        <img src="/static/images/pessoas.png" alt="Pessoas 2030"
+             style="height:56px;object-fit:contain">
+        <img src="/static/images/2030.png"    alt="Portugal 2030"
+             style="height:56px;object-fit:contain">
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-top:16px;line-height:1.6;
+       border-top:1px solid var(--border);padding-top:14px">
+        Projeto desenvolvido no âmbito de um curso profissional cofinanciado pelo
+        Fundo Social Europeu (FSE+), através do Programa Portugal 2030 — Pessoas,
+        apoiando a qualificação e o desenvolvimento de competências tecnológicas em
+        Portugal.
+    </p>
+</div>
+
+<!-- ── Tech stack ─────────────────────────────────────────────────────── -->
+<div class="card">
+    <div class="card-label">Tecnologias &amp; Hardware</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:4px">
+
+        <div style="padding:12px 14px;background:var(--bg);border-radius:9px;border:1px solid var(--border)">
+            <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                 letter-spacing:.07em;margin-bottom:5px">Plataforma</div>
+            <div style="font-weight:700;font-size:.88rem">Raspberry Pi 3</div>
+        </div>
+
+        <div style="padding:12px 14px;background:var(--bg);border-radius:9px;border:1px solid var(--border)">
+            <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                 letter-spacing:.07em;margin-bottom:5px">Backend</div>
+            <div style="font-weight:700;font-size:.88rem">Python 3 · Flask</div>
+        </div>
+
+        <div style="padding:12px 14px;background:var(--bg);border-radius:9px;border:1px solid var(--border)">
+            <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                 letter-spacing:.07em;margin-bottom:5px">Motores</div>
+            <div style="font-weight:700;font-size:.88rem">L298N (Dual H-Bridge)</div>
+        </div>
+
+        <div style="padding:12px 14px;background:var(--bg);border-radius:9px;border:1px solid var(--border)">
+            <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                 letter-spacing:.07em;margin-bottom:5px">IMU</div>
+            <div style="font-weight:700;font-size:.88rem">MPU6050 (I²C)</div>
+        </div>
+
+        <div style="padding:12px 14px;background:var(--bg);border-radius:9px;border:1px solid var(--border)">
+            <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                 letter-spacing:.07em;margin-bottom:5px">Distância</div>
+            <div style="font-weight:700;font-size:.88rem">HC-SR04 Ultrasónico</div>
+        </div>
+
+        <div style="padding:12px 14px;background:var(--bg);border-radius:9px;border:1px solid var(--border)">
+            <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                 letter-spacing:.07em;margin-bottom:5px">Linha</div>
+            <div style="font-weight:700;font-size:.88rem">3× Sensores IR</div>
+        </div>
+
+        <div style="padding:12px 14px;background:var(--bg);border-radius:9px;border:1px solid var(--border)">
+            <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                 letter-spacing:.07em;margin-bottom:5px">Interface</div>
+            <div style="font-weight:700;font-size:.88rem">Web Responsiva</div>
+        </div>
+
+        <div style="padding:12px 14px;background:var(--bg);border-radius:9px;border:1px solid var(--border)">
+            <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;
+                 letter-spacing:.07em;margin-bottom:5px">Código fonte</div>
+            <div style="font-weight:700;font-size:.88rem">
+                <a href="https://github.com/nedizin/SmartTractor"
+                   target="_blank" rel="noopener"
+                   style="color:var(--accent);text-decoration:none">
+                   GitHub ↗
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

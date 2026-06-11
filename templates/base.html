@@ -223,6 +223,44 @@
         .bn-item svg { width: 20px; height: 20px; }
         .bn-item.active { color: var(--accent); }
 
+        /* ── Page footer ─────────────────────────────────── */
+        .page-footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .footer-logos {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .footer-logos img {
+            height: 30px;
+            width: auto;
+            object-fit: contain;
+            opacity: 0.75;
+            transition: opacity .2s;
+        }
+        .footer-logos img:hover { opacity: 1; }
+        .footer-copy {
+            font-size: .7rem;
+            color: var(--muted);
+            text-align: right;
+            line-height: 1.6;
+        }
+        .footer-copy a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .footer-copy a:hover { text-decoration: underline; }
+
         /* ── Responsive ─────────────────────────────────── */
         @media (max-width: 768px) {
             .topnav { height: 58px; padding: 0 16px; gap: 14px; }
@@ -231,6 +269,9 @@
             .main { padding: 14px; padding-bottom: 80px; }
             .estop { bottom: 76px; right: 14px; }
             .estop-btn { width: 56px; height: 56px; font-size: .6rem; }
+            .page-footer { padding: 12px 16px; justify-content: center; gap: 8px; }
+            .footer-logos { justify-content: center; }
+            .footer-copy { text-align: center; width: 100%; }
         }
     </style>
 </head>
@@ -248,6 +289,7 @@
         <a href="/autonomous_radar" id="nl-auto">Autónomo</a>
         <a href="/control_panel"    id="nl-panel">Painel</a>
         <a href="/mobile_cockpit"   id="nl-cockpit">Cockpit</a>
+        <a href="/credits"          id="nl-credits">Créditos</a>
     </div>
     <div class="nav-status">
         <div class="conn-dot" id="conn-dot"></div>
@@ -258,6 +300,19 @@
 <main class="main">
     {% block content %}{% endblock %}
 </main>
+
+<footer class="page-footer">
+    <div class="footer-logos">
+        <img src="/static/images/logo-epms.png" alt="EPMS">
+        <img src="/static/images/eu.png"        alt="União Europeia">
+        <img src="/static/images/pessoas.png"   alt="Pessoas 2030">
+        <img src="/static/images/2030.png"      alt="Portugal 2030">
+    </div>
+    <div class="footer-copy">
+        Smart SafeTech Tractor &middot; EPMS 2025/2026<br>
+        <a href="/credits">Créditos &amp; Financiamento</a>
+    </div>
+</footer>
 
 <nav class="bottomnav">
     <div class="bn-inner">
@@ -281,6 +336,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
             Cockpit
         </a>
+        <a href="/credits"         class="bn-item" id="bn-credits">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            Créditos
+        </a>
     </div>
 </nav>
 
@@ -298,6 +357,7 @@
         '/control_panel':   ['nl-panel',   'bn-panel'],
         '/autonomous_radar':['nl-auto',    null],
         '/mobile_cockpit':  ['nl-cockpit', 'bn-cockpit'],
+        '/credits':         ['nl-credits', 'bn-credits'],
     };
     if (_navMap[_p]) {
         _navMap[_p].forEach(id => id && document.getElementById(id)?.classList.add('active'));

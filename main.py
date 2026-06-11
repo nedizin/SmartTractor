@@ -604,6 +604,10 @@ def mobile_cockpit():
     tractor.current_program = "mobile_cockpit"
     return render_template('mobile_cockpit.html')
 
+@app.route('/credits')
+def credits():
+    return render_template('credits.html')
+
 
 # ── API ───────────────────────────────────────────────────────────────────────
 
